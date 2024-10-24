@@ -18,35 +18,43 @@ struct HomePageScreen: View {
     @State private var items = [Product]()
     @State private var isLoading = false
     
+    @State private var isPresenting = false
+    
     var body: some View {
-        VStack {
-            ScrollView {
-                LazyVStack {
-                    ForEach(items) { item in
-                        // details page navigation
-                        NavigationLink(destination: ItemDetailsScreen(item: item)){
-                            Text(item.title)
-                                .font(.headline)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(Color(.systemGray5))
-                                .cornerRadius(8)
-                                .padding(.horizontal)
+        ZStack(alignment: .bottom){
+           
+            VStack {
+                ScrollView {
+                    LazyVStack {
+                        ForEach(items) { item in
+                            // details page navigation
+                            NavigationLink(destination: ItemDetailsScreen(item: item)){
+                                Text(item.title)
+                                    .font(.headline)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color(.systemGray5))
+                                    .cornerRadius(8)
+                                    .padding(.horizontal)
+                            }
+                            
+                            // Load more items when this one appears
+                            //                        if item == items.last {
+                            //                            //                           // ProgressView()
+                            //                            //                                .onAppear {
+                            //                            //                                    loadMoreItems()
+                            //                            //                                }
+                            //                        }
                         }
-                        
-                        // Load more items when this one appears
-                        //                        if item == items.last {
-                        //                            //                           // ProgressView()
-                        //                            //                                .onAppear {
-                        //                            //                                    loadMoreItems()
-                        //                            //                                }
-                        //                        }
                     }
                 }
+                
             }
-            
-            
-            
+            Button(action: {
+                isPresenting.toggle()
+            }, label: {
+                Text("Button")
+            })
         }
         .navigationTitle("Home")
         .onAppear(){
@@ -54,6 +62,10 @@ struct HomePageScreen: View {
             loadInitialItems()
             
         }
+        
+        .sheet(isPresented: $isPresenting, content: {
+            ProfileScreen()
+        })
     }
     
     private func loadInitialItems() {
